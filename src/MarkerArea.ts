@@ -908,6 +908,7 @@ export class MarkerArea {
       this.markerImage.removeChild(this.currentMarker.container);
       this.markers.splice(this.markers.indexOf(this.currentMarker), 1);
       this.addUndoStep();
+      this.callMarkerCreateCallbacks()
     }
   }
 
@@ -1022,6 +1023,12 @@ export class MarkerArea {
     this.createMarkerCallbacks = []
   }
 
+  private callMarkerCreateCallbacks(){
+    this.createMarkerCallbacks.forEach((callback)=>{
+      callback()
+    })
+  }
+
   /**
    * Restores MarkerArea state to continue previous annotation session.
    *
@@ -1094,11 +1101,7 @@ export class MarkerArea {
     this.toolbox.setPanelButtons(this.currentMarker.toolboxPanels);
   }
 
-  private callMarkerCreateCallbacks(){
-    this.createMarkerCallbacks.forEach((callback)=>{
-      callback()
-    })
-  }
+
 
   private markerCreated(marker: MarkerBase) {
     this.mode = 'select';
@@ -1147,7 +1150,6 @@ export class MarkerArea {
       this.toolbar.setCurrentMarker(this.currentMarker);
       this.toolbox.setPanelButtons(this.currentMarker.toolboxPanels);
     }
-    this.callMarkerCreateCallbacks()
   }
 
   private onPointerDown(ev: PointerEvent) {
@@ -1220,6 +1222,7 @@ export class MarkerArea {
         this.currentMarker.pointerUp(
           this.clientToLocalCoordinates(ev.clientX, ev.clientY)
         );
+        this.callMarkerCreateCallbacks()
       }
     }
     this.isDragging = false;
