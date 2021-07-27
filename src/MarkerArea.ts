@@ -1094,14 +1094,17 @@ export class MarkerArea {
     this.toolbox.setPanelButtons(this.currentMarker.toolboxPanels);
   }
 
+  private callMarkerCreateCallbacks(){
+    this.createMarkerCallbacks.forEach((callback)=>{
+      callback()
+    })
+  }
+
   private markerCreated(marker: MarkerBase) {
     this.mode = 'select';
     this.markerImage.style.cursor = 'default';
     this.markers.push(marker);
 
-    this.createMarkerCallbacks.forEach((callback)=>{
-      callback()
-    })
 
     this.setCurrentMarker(marker);
     if (
@@ -1144,6 +1147,7 @@ export class MarkerArea {
       this.toolbar.setCurrentMarker(this.currentMarker);
       this.toolbox.setPanelButtons(this.currentMarker.toolboxPanels);
     }
+    this.callMarkerCreateCallbacks()
   }
 
   private onPointerDown(ev: PointerEvent) {
